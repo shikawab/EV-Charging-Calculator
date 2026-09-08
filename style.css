@@ -148,7 +148,7 @@ input:focus, select:focus { background: #fff; border-color: #55766a; }
 .result-title { margin-bottom: 26px; color: #315c4d; letter-spacing: .18em; }
 
 .result-soc {
-    margin-bottom: 42px;
+    margin-bottom: 20px;
     font-size: clamp(38px, 10vw, 64px);
     font-weight: 700;
     line-height: 1;
@@ -158,6 +158,36 @@ input:focus, select:focus { background: #fff; border-color: #55766a; }
 .result-soc-start { color: #8a8983; }
 
 .result-soc-target { color: #315c4d; }
+
+.battery-gauge {
+    display: flex;
+    align-items: center;
+    width: min(100%, 260px);
+    margin: 0 auto 42px;
+}
+
+.battery-gauge-body {
+    display: flex;
+    flex: 1;
+    height: 14px;
+    overflow: hidden;
+    background: #f2f1ed;
+    border: 1px solid #d8d6cf;
+    border-radius: 4px;
+}
+
+.battery-gauge::after {
+    width: 4px;
+    height: 8px;
+    margin-left: 3px;
+    content: "";
+    background: #d8d6cf;
+    border-radius: 0 2px 2px 0;
+}
+
+.battery-gauge-start { background: #8a8983; }
+
+.battery-gauge-added { background: #315c4d; }
 
 .result-label { margin-bottom: 8px; color: #77766f; letter-spacing: .16em; font-size: 11px; }
 

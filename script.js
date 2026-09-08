@@ -180,6 +180,9 @@ function renderResult(startSOC, targetSOC, durationMinutes, energy, chargerPower
         <div class="result-card">
             <div class="result-title">RESULT</div>
             <div class="result-soc"><span class="result-soc-start">${startSOC.toFixed(1)}% →</span> <span class="result-soc-target">${targetSOC.toFixed(1)}%</span></div>
+            <div class="battery-gauge" role="img" aria-label="バッテリー残量。${startSOC.toFixed(1)}%から${targetSOC.toFixed(1)}%まで充電">
+                <div class="battery-gauge-body"><span class="battery-gauge-start" style="width: ${startSOC}%;"></span><span class="battery-gauge-added" style="width: ${targetSOC - startSOC}%;"></span></div>
+            </div>
             <div class="result-label">完了予定時刻</div>
             <div class="result-completion">${getCompletionTime(durationMinutes)}</div>
             <div class="result-info"><div>${formatDuration(durationMinutes)}</div><div>+${energy.toFixed(1)} kWh</div></div>
