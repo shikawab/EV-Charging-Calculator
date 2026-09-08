@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Charging Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <header class="site-header">
+            <h1>EV CC</h1>
+            <p>EV CHARGING CALCULATOR</p>
+        </header>
+
+        <section class="calculator" aria-label="充電条件">
+            <div class="section">
+                <div class="section-label">VEHICLE</div>
+
+                <div class="input-group">
+                    <label for="vehicle">車種</label>
+
+                    <select id="vehicle" onchange="selectVehicle()">
+                        <option value="">車種を選択</option>
+                        <option value="ex30">Volvo EX30（51 kWh）</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-label">CALCULATION</div>
+
+                <div class="input-group">
+                    <label>何を計算しますか？</label>
+
+                    <div class="mode-buttons">
+                        <button
+                            type="button"
+                            id="timeModeButton"
+                            class="mode-button active"
+                            onclick="setMode('time')"
+                        >
+                            ⏱ 時間から選ぶ
+                        </button>
+
+                        <button
+                            type="button"
+                            id="socModeButton"
+                            class="mode-button"
+                            onclick="setMode('soc')"
+                        >
+                            🔋 充電量から選ぶ
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="batteryCapacity">
+                        バッテリー容量（kWh）
+                    </label>
+
+                    <input
+                        type="number"
+                        id="batteryCapacity"
+                        value="51"
+                        placeholder="例：51"
+                        min="0"
+                        step="0.1"
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="currentSOC">
+                        現在の充電率（%）
+                    </label>
+
+                    <input
+                        type="number"
+                        id="currentSOC"
+                        value="10"
+                        placeholder="例：20"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="chargingPower">
+                        充電器の出力（kW）
+                    </label>
+
+                    <input
+                        type="number"
+                        id="chargingPower"
+                        value="150"
+                        placeholder="例：150"
+                        min="0"
+                        step="1"
+                    >
+                </div>
+
+                <div id="timeMode" class="input-group">
+                    <label for="chargingTime">
+                        充電時間（分）
+                    </label>
+
+                    <input
+                        type="number"
+                        id="chargingTime"
+                        placeholder="例：30"
+                        min="0"
+                        step="1"
+                    >
+                </div>
+
+                <div id="socMode" class="input-group hidden">
+                    <label for="targetSOC">
+                        目標の充電率（%）
+                    </label>
+
+                    <input
+                        type="number"
+                        id="targetSOC"
+                        value="80"
+                        placeholder="例：80"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                    >
+                </div>
+
+                <button
+                    type="button"
+                    class="calculate-button"
+                    onclick="calculate()"
+                >
+                    計算する
+                </button>
+            </div>
+        </section>
+
+        <section id="result" aria-live="polite"></section>
+    </main>
+
+    <footer class="site-footer">
+    Design by Shinnosuke Kawabe. Powered by ChatGPT. 2026
+</footer>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
