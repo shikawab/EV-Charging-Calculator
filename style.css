@@ -149,16 +149,20 @@ input:focus, select:focus { background: #fff; border-color: #55766a; }
 
 .result-soc {
     margin-bottom: 42px;
-    color: #315c4d;
     font-size: clamp(38px, 10vw, 64px);
     font-weight: 700;
     line-height: 1;
     letter-spacing: -2px;
 }
 
+.result-soc-start { color: #8a8983; }
+
+.result-soc-target { color: #315c4d; }
+
 .result-label { margin-bottom: 8px; color: #77766f; letter-spacing: .16em; font-size: 11px; }
 
 .result-completion {
+    color: #1a51f5;
     font-size: clamp(32px, 8vw, 52px);
     font-weight: 700;
     line-height: 1;
