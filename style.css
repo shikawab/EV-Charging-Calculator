@@ -162,7 +162,6 @@ input:focus, select:focus { background: #fff; border-color: #55766a; }
 .result-label { margin-bottom: 8px; color: #77766f; letter-spacing: .16em; font-size: 11px; }
 
 .result-completion {
-    color: #1a51f5;
     font-size: clamp(32px, 8vw, 52px);
     font-weight: 700;
     line-height: 1;
