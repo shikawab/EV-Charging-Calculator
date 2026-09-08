@@ -1,7 +1,10 @@
-/* EV CC — Volvo EX30 51 kWh charging-curve model */
+/* EV CC — vehicle-specific charging-curve model */
 
 const vehicles = {
-    ex30: { name: "Volvo EX30", batteryCapacity: 51 }
+    ex30: { name: "Volvo EX30", batteryCapacity: 51, chargingCurve: "ex30" },
+    ex30CrossCountry: { name: "Volvo EX30 Cross Country", batteryCapacity: 69, chargingCurve: "ex30CrossCountry" },
+    model3LongRange: { name: "Tesla Model 3 Long Range", batteryCapacity: 85.3, chargingCurve: "model3LongRange" },
+    modelYLongRange: { name: "Tesla Model Y Long Range", batteryCapacity: 78, chargingCurve: "modelYLongRange" }
 };
 
 // Approximate EVKX points. The same interpolated curve drives the calculation and chart.
@@ -17,10 +20,55 @@ const ex30ChargingCurve = [
     { soc: 90, power: 14 }, { soc: 95, power: 14 }, { soc: 100, power: 14 }
 ];
 
+const ex30CrossCountryChargingCurve = [
+    { soc: 10, power: 55 }, { soc: 15, power: 154 }, { soc: 20, power: 155 }, { soc: 25, power: 157 },
+    { soc: 30, power: 157 }, { soc: 35, power: 143 }, { soc: 40, power: 128 }, { soc: 45, power: 115 },
+    { soc: 50, power: 101 }, { soc: 55, power: 87 }, { soc: 60, power: 73 }, { soc: 65, power: 74 },
+    { soc: 70, power: 67 }, { soc: 75, power: 61 }, { soc: 80, power: 38 }, { soc: 85, power: 39 },
+    { soc: 90, power: 26 }, { soc: 95, power: 26 }, { soc: 100, power: 8 }
+];
+
+const model3LongRangeChargingCurve = [
+    { soc: 10, power: 227 }, { soc: 15, power: 225 }, { soc: 20, power: 201 }, { soc: 25, power: 181 },
+    { soc: 30, power: 173 }, { soc: 35, power: 148 }, { soc: 40, power: 125 }, { soc: 45, power: 110 },
+    { soc: 50, power: 101 }, { soc: 55, power: 92 }, { soc: 60, power: 81 }, { soc: 65, power: 79 },
+    { soc: 70, power: 64 }, { soc: 75, power: 55 }, { soc: 80, power: 50 }, { soc: 85, power: 44 },
+    { soc: 90, power: 38 }, { soc: 95, power: 28 }, { soc: 100, power: 7 }
+];
+
+const modelYLongRangeChargingCurve = [
+    { soc: 10, power: 225 }, { soc: 15, power: 203 }, { soc: 20, power: 189 }, { soc: 25, power: 173 },
+    { soc: 30, power: 159 }, { soc: 35, power: 145 }, { soc: 40, power: 130 }, { soc: 45, power: 116 },
+    { soc: 50, power: 103 }, { soc: 55, power: 92 }, { soc: 60, power: 82 }, { soc: 65, power: 76 },
+    { soc: 70, power: 71 }, { soc: 75, power: 61 }, { soc: 80, power: 45 }, { soc: 85, power: 37 },
+    { soc: 90, power: 32 }, { soc: 95, power: 30 }, { soc: 100, power: 13 }
+];
+
+const chargingCurves = {
+    ex30: ex30ChargingCurve,
+    ex30CrossCountry: ex30CrossCountryChargingCurve,
+    model3LongRange: model3LongRangeChargingCurve,
+    modelYLongRange: modelYLongRangeChargingCurve
+};
+
 let currentMode = "time";
+let selectedVehicle = null;
+
+function setGreeting() {
+    const hour = new Date().getHours();
+    const greeting = hour >= 4 && hour < 11
+        ? "おはようございます"
+        : hour >= 11 && hour < 16
+            ? "こんにちは"
+            : "こんばんは";
+    document.getElementById("greeting").textContent = greeting;
+}
+
+setGreeting();
 
 function selectVehicle() {
     const vehicle = vehicles[document.getElementById("vehicle").value];
+    selectedVehicle = vehicle || null;
     if (vehicle) document.getElementById("batteryCapacity").value = vehicle.batteryCapacity;
 }
 
@@ -40,13 +88,15 @@ function validateInputs(batteryCapacity, currentSOC, chargingPower) {
 }
 
 function getChargingPower(soc) {
-    if (soc <= ex30ChargingCurve[0].soc) return ex30ChargingCurve[0].power;
-    const last = ex30ChargingCurve.at(-1);
+    const curve = selectedVehicle ? chargingCurves[selectedVehicle.chargingCurve] : null;
+    if (!curve) return null;
+    if (soc <= curve[0].soc) return curve[0].power;
+    const last = curve.at(-1);
     if (soc >= last.soc) return last.power;
 
-    for (let i = 0; i < ex30ChargingCurve.length - 1; i++) {
-        const lower = ex30ChargingCurve[i];
-        const upper = ex30ChargingCurve[i + 1];
+    for (let i = 0; i < curve.length - 1; i++) {
+        const lower = curve[i];
+        const upper = curve[i + 1];
         if (soc >= lower.soc && soc <= upper.soc) {
             const ratio = (soc - lower.soc) / (upper.soc - lower.soc);
             return lower.power + (upper.power - lower.power) * ratio;
@@ -56,7 +106,8 @@ function getChargingPower(soc) {
 }
 
 function getEffectiveChargingPower(soc, chargerPower) {
-    return Math.min(getChargingPower(soc), chargerPower);
+    const vehiclePower = getChargingPower(soc);
+    return vehiclePower === null ? chargerPower : Math.min(vehiclePower, chargerPower);
 }
 
 // Each segment uses the arithmetic mean of its start/end effective power.
